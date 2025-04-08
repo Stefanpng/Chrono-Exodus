@@ -9,7 +9,7 @@ public class PlayerMovement : MonoBehaviour
     float horizontalMovement;
 
     [Header("Jumping")]
-    public float jumpPower = 10f;
+    public float jumpPower = 5f;
 
     [Header("GroundCheck")]
     public Transform groundCheckPos;
