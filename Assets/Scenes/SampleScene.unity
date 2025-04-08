@@ -154,6 +154,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   rb: {fileID: 400963328}
   moveSpeed: 5
+  jumpPower: 10
 --- !u!114 &400963326
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -197,14 +198,6 @@ MonoBehaviour:
     m_ActionName: 'Player/Move[/Keyboard/w,/Keyboard/upArrow,/Keyboard/s,/Keyboard/downArrow,/Keyboard/a,/Keyboard/leftArrow,/Keyboard/d,/Keyboard/rightArrow]'
   - m_PersistentCalls:
       m_Calls: []
-    m_ActionId: 7a962e1d-f0a4-487e-9605-46fdb8fff744
-    m_ActionName: 'Player/Look[/Mouse/delta]'
-  - m_PersistentCalls:
-      m_Calls: []
-    m_ActionId: 062a6238-68bc-4a17-ab28-5b9fdfdf71da
-    m_ActionName: 'Player/Fire[/Mouse/leftButton]'
-  - m_PersistentCalls:
-      m_Calls: []
     m_ActionId: ab03e339-de01-4ad7-ae3f-f1b53f77bb92
     m_ActionName: 'UI/Navigate[/Keyboard/w,/Keyboard/upArrow,/Keyboard/s,/Keyboard/downArrow,/Keyboard/a,/Keyboard/leftArrow,/Keyboard/d,/Keyboard/rightArrow]'
   - m_PersistentCalls:
@@ -243,6 +236,22 @@ MonoBehaviour:
       m_Calls: []
     m_ActionId: 69f3c197-a671-4472-9564-9b9afccd0689
     m_ActionName: UI/TrackedDeviceOrientation
+  - m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 400963325}
+        m_TargetAssemblyTypeName: PlayerMovement, Assembly-CSharp
+        m_MethodName: Jump
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+    m_ActionId: cae103e7-a794-4d14-9b2b-eaefbd9ab520
+    m_ActionName: 'Player/Jump[/Keyboard/upArrow,/Keyboard/space,/Keyboard/w]'
   m_NeverAutoSwitchControlSchemes: 0
   m_DefaultControlScheme: 
   m_DefaultActionMap: Player
