@@ -155,11 +155,15 @@ MonoBehaviour:
   rb: {fileID: 400963328}
   moveSpeed: 5
   jumpPower: 10
+  maxJumps: 2
   groundCheckPos: {fileID: 1831937975}
   groundCheckSize: {x: 0.57, y: 0.04}
   groundLayer:
     serializedVersion: 2
     m_Bits: 8
+  baseGravity: 2
+  maxFallSpeed: 8
+  fallSpeedMultiplier: 2
 --- !u!114 &400963326
 MonoBehaviour:
   m_ObjectHideFlags: 0
