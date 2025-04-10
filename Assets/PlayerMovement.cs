@@ -60,11 +60,10 @@ public class PlayerMovement : MonoBehaviour
         ProcessGravity();
         ProcessWallSlide();
         ProcessWallJump();
-
+        Flip();
         if (!isWallJumping)
         {
             rb.linearVelocity = new Vector2(horizontalMovement * moveSpeed, rb.linearVelocity.y);
-            Flip();
         }
 
         animator.SetFloat("yVelocity", rb.linearVelocity.y);
