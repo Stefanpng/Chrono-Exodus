@@ -6,6 +6,7 @@ public class PlayerMovement : MonoBehaviour
     public Rigidbody2D rb;
     public Animator animator;
     bool isFacingRight = true;
+    public ParticleSystem dustFX;
 
     [Header("Movement")]
     public float moveSpeed = 5f;
@@ -87,19 +88,17 @@ public class PlayerMovement : MonoBehaviour
     { 
         if (jumpsRemaining > 0)
         {
-
-        
             if (context.performed)
             {
                 rb.linearVelocity = new Vector2(rb.linearVelocity.x, jumpPower);
                 jumpsRemaining--;
-                animator.SetTrigger("jump");
+                JumpFX();
             }
             else if (context.canceled)
             {
                 rb.linearVelocity = new Vector2(rb.linearVelocity.x, rb.linearVelocity.y * 0.5f);
                 jumpsRemaining--;
-                animator.SetTrigger("jump");
+                JumpFX();
             }
         }
 
@@ -109,7 +108,7 @@ public class PlayerMovement : MonoBehaviour
             isWallJumping = true;
             rb.linearVelocity = new Vector2(wallJumpDirectoin * wallJumpPower.x, wallJumpPower.y);
             wallJumpTimer = 0;
-            animator.SetTrigger("jump");
+            JumpFX();
 
             //Force Flip
             if (transform.localScale.x != wallJumpDirectoin)
@@ -122,6 +121,12 @@ public class PlayerMovement : MonoBehaviour
 
             Invoke(nameof(CancelWallJump), wallJumpTime + 0.1f);
         }
+    }
+
+    private void JumpFX()
+    {
+        animator.SetTrigger("jump");
+        dustFX.Play();
     }
 
     private void GroundCheck()
@@ -199,6 +204,12 @@ public class PlayerMovement : MonoBehaviour
             Vector3 ls = transform.localScale;
             ls.x *= -1f;
             transform.localScale = ls;
+
+            if(rb.linearVelocity.y == 0)
+            {
+                dustFX.Play();
+            }
+            
         }
     }
 
