@@ -420,6 +420,20 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   maxHealth: 3
   healthUI: {fileID: 947015756}
+--- !u!114 &400963332
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 400963324}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d9c94dcbe3234054c9f02ba0a62d78f5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  bulletPrefab: {fileID: 3707448520364042076, guid: f34171a10831ea642b8db0931d774071, type: 3}
+  bulletSpeed: 30
 --- !u!1001 &402225731
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -9239,6 +9253,10 @@ PrefabInstance:
       propertyPath: m_Color.r
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 8688170204885366176, guid: 73ef3da14abb19f42b0f7fa4f6e37f7e, type: 3}
+      propertyPath: m_Enabled
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 8738254237522076723, guid: 73ef3da14abb19f42b0f7fa4f6e37f7e, type: 3}
       propertyPath: m_Name
       value: Player
@@ -9257,6 +9275,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 8738254237522076723, guid: 73ef3da14abb19f42b0f7fa4f6e37f7e, type: 3}
       insertIndex: -1
       addedObject: {fileID: 400963331}
+    - targetCorrespondingSourceObject: {fileID: 8738254237522076723, guid: 73ef3da14abb19f42b0f7fa4f6e37f7e, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 400963332}
   m_SourcePrefab: {fileID: 100100000, guid: 73ef3da14abb19f42b0f7fa4f6e37f7e, type: 3}
 --- !u!4 &1567053179008072972 stripped
 Transform:
