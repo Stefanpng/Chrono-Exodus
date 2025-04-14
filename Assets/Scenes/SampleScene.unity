@@ -9300,6 +9300,26 @@ PrefabInstance:
       propertyPath: jumpForce
       value: 4
       objectReference: {fileID: 0}
+    - target: {fileID: 2295541799344340798, guid: d3585ab6ecf521d49af8199c4381d4bb, type: 3}
+      propertyPath: lootTable.Array.size
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 2295541799344340798, guid: d3585ab6ecf521d49af8199c4381d4bb, type: 3}
+      propertyPath: lootTable.Array.data[0].dropChance
+      value: 90
+      objectReference: {fileID: 0}
+    - target: {fileID: 2295541799344340798, guid: d3585ab6ecf521d49af8199c4381d4bb, type: 3}
+      propertyPath: lootTable.Array.data[0].itemPrefab
+      value: 
+      objectReference: {fileID: 8593951150962770147, guid: 0ffe42bb9ab17ab48b27ab9430415731, type: 3}
+    - target: {fileID: 2295541799344340798, guid: d3585ab6ecf521d49af8199c4381d4bb, type: 3}
+      propertyPath: lootTable.Array.data[1].dropChance
+      value: 60
+      objectReference: {fileID: 0}
+    - target: {fileID: 2295541799344340798, guid: d3585ab6ecf521d49af8199c4381d4bb, type: 3}
+      propertyPath: lootTable.Array.data[1].itemPrefab
+      value: 
+      objectReference: {fileID: 4690403325066840935, guid: cb30222c8a64f3b4e98b4ad2f7ea7c3f, type: 3}
     - target: {fileID: 2341130770834873943, guid: d3585ab6ecf521d49af8199c4381d4bb, type: 3}
       propertyPath: m_LocalPosition.x
       value: -1.8
@@ -9342,7 +9362,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6664746804738570710, guid: d3585ab6ecf521d49af8199c4381d4bb, type: 3}
       propertyPath: m_GravityScale
-      value: 1.5
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 7480375708863935539, guid: d3585ab6ecf521d49af8199c4381d4bb, type: 3}
       propertyPath: m_Name
