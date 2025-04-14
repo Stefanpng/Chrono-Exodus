@@ -22,6 +22,6 @@ public class PlayerShoot : MonoBehaviour
 
         GameObject bullet = Instantiate(bulletPrefab, transform.position, Quaternion.identity);
         bullet.GetComponent<Rigidbody2D>().linearVelocity = new Vector2(shootDirection.x, shootDirection.y) * bulletSpeed;
-
+        Destroy(bullet, 2f);
     }
 }
