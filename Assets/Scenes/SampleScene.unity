@@ -9298,26 +9298,34 @@ PrefabInstance:
       objectReference: {fileID: 400963330}
     - target: {fileID: 2295541799344340798, guid: d3585ab6ecf521d49af8199c4381d4bb, type: 3}
       propertyPath: jumpForce
-      value: 4
+      value: 10
       objectReference: {fileID: 0}
     - target: {fileID: 2295541799344340798, guid: d3585ab6ecf521d49af8199c4381d4bb, type: 3}
       propertyPath: lootTable.Array.size
-      value: 2
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 2295541799344340798, guid: d3585ab6ecf521d49af8199c4381d4bb, type: 3}
       propertyPath: lootTable.Array.data[0].dropChance
-      value: 90
+      value: 100
       objectReference: {fileID: 0}
     - target: {fileID: 2295541799344340798, guid: d3585ab6ecf521d49af8199c4381d4bb, type: 3}
       propertyPath: lootTable.Array.data[0].itemPrefab
       value: 
-      objectReference: {fileID: 8593951150962770147, guid: 0ffe42bb9ab17ab48b27ab9430415731, type: 3}
+      objectReference: {fileID: 4967471893347049774, guid: 8b62e33af8f73394ba0cf96d99cc6bbc, type: 3}
     - target: {fileID: 2295541799344340798, guid: d3585ab6ecf521d49af8199c4381d4bb, type: 3}
       propertyPath: lootTable.Array.data[1].dropChance
-      value: 60
+      value: 80
       objectReference: {fileID: 0}
     - target: {fileID: 2295541799344340798, guid: d3585ab6ecf521d49af8199c4381d4bb, type: 3}
       propertyPath: lootTable.Array.data[1].itemPrefab
+      value: 
+      objectReference: {fileID: 8593951150962770147, guid: 0ffe42bb9ab17ab48b27ab9430415731, type: 3}
+    - target: {fileID: 2295541799344340798, guid: d3585ab6ecf521d49af8199c4381d4bb, type: 3}
+      propertyPath: lootTable.Array.data[2].dropChance
+      value: 60
+      objectReference: {fileID: 0}
+    - target: {fileID: 2295541799344340798, guid: d3585ab6ecf521d49af8199c4381d4bb, type: 3}
+      propertyPath: lootTable.Array.data[2].itemPrefab
       value: 
       objectReference: {fileID: 4690403325066840935, guid: cb30222c8a64f3b4e98b4ad2f7ea7c3f, type: 3}
     - target: {fileID: 2341130770834873943, guid: d3585ab6ecf521d49af8199c4381d4bb, type: 3}
@@ -9383,6 +9391,7 @@ SceneRoots:
   m_Roots:
   - {fileID: 519420032}
   - {fileID: 619394802}
+  - {fileID: 8158279509368684560}
   - {fileID: 450740135865790224}
   - {fileID: 1380879399}
   - {fileID: 370987067}
@@ -9390,5 +9399,4 @@ SceneRoots:
   - {fileID: 871205274}
   - {fileID: 1488022740}
   - {fileID: 1434895924}
-  - {fileID: 8158279509368684560}
   - {fileID: 1629103080}
