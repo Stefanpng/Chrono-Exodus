@@ -9,6 +9,7 @@ public class PlayerMovement : MonoBehaviour
     public Animator animator;
     bool isFacingRight = true;
     public ParticleSystem dustFX;
+    BoxCollider2D playerColider;
 
     [Header("Movement")]
     public float moveSpeed = 5f;
@@ -32,6 +33,7 @@ public class PlayerMovement : MonoBehaviour
     public Vector2 groundCheckSize = new Vector2(0.5f, 0.05f);
     public LayerMask groundLayer;
     bool isGrounded;
+    bool isOnPlatform;
 
     [Header("Gravity")]
     public float baseGravity = 2f;
@@ -57,6 +59,7 @@ public class PlayerMovement : MonoBehaviour
     private void Start()
     {
         trailRenderer = GetComponent<TrailRenderer>();
+        playerColider = GetComponent<BoxCollider2D>();
     }
 
     // Update is called once per frame
@@ -124,6 +127,39 @@ public class PlayerMovement : MonoBehaviour
 
         yield return new WaitForSeconds(dashCooldown);
         canDash = true;
+    }
+
+    public void Drop(InputAction.CallbackContext context)
+    {
+        if(context.performed && isGrounded && isOnPlatform && playerColider.enabled)
+        {
+            //Coroutine Dropping
+            StartCoroutine(DisablePlayerCollider(0.025f));
+
+        }
+    }
+
+    private IEnumerator DisablePlayerCollider(float disableTime)
+    {
+        playerColider.enabled = false;
+        yield return new WaitForSeconds(disableTime);
+        playerColider.enabled = true;
+    }
+
+    private void OnCollisionEnter2D(Collision2D collision)
+    {
+        if (collision.gameObject.CompareTag("Platform"))
+        {
+            isOnPlatform = true;
+        }
+    }
+
+    private void OnCollisionExit2D(Collision2D collision)
+    {
+        if (collision.gameObject.CompareTag("Platform"))
+        {
+            isOnPlatform = false;
+        }
     }
 
     public void Jump(InputAction.CallbackContext context) 
