@@ -1,3 +1,5 @@
+using System.Collections;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -11,6 +13,14 @@ public class PlayerMovement : MonoBehaviour
     [Header("Movement")]
     public float moveSpeed = 5f;
     float horizontalMovement;
+
+    [Header("Dashing")]
+    public float dashSpeed = 5f;
+    public float dashDuration = 0.1f;
+    public float dashCooldown = 0.1f;
+    bool isDashing;
+    bool canDash = true;
+    TrailRenderer trailRenderer;
 
     [Header("Jumping")]
     public float jumpPower = 10f;
@@ -44,18 +54,22 @@ public class PlayerMovement : MonoBehaviour
     float wallJumpTimer;
     public Vector2 wallJumpPower = new Vector2(5f, 10f);
 
-
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
+    private void Start()
     {
-        
+        trailRenderer = GetComponent<TrailRenderer>();
     }
 
-    
     // Update is called once per frame
     void Update()
     {
+        animator.SetFloat("yVelocity", rb.linearVelocity.y);
+        animator.SetFloat("magnitude", rb.linearVelocity.magnitude);
+        animator.SetBool("isWallSliding", isWallSliding);
 
+        if (isDashing)
+        {
+            return;
+        }
         GroundCheck();
         Gravity();
         ProcessGravity();
@@ -66,12 +80,6 @@ public class PlayerMovement : MonoBehaviour
         {
             rb.linearVelocity = new Vector2(horizontalMovement * moveSpeed, rb.linearVelocity.y);
         }
-
-        animator.SetFloat("yVelocity", rb.linearVelocity.y);
-        animator.SetFloat("magnitude", rb.linearVelocity.magnitude);
-        animator.SetBool("isWallSliding", isWallSliding);  
-
-       
     }
 
     private void Gravity()
@@ -82,6 +90,37 @@ public class PlayerMovement : MonoBehaviour
     public void Move(InputAction.CallbackContext context)
     {
         horizontalMovement = context.ReadValue<Vector2>().x;
+    }
+
+    public void Dash(InputAction.CallbackContext context)
+    {
+        if(context.performed && canDash)
+        {
+            StartCoroutine(DashCoroutine());
+        }
+    }
+
+    private IEnumerator DashCoroutine()
+    {
+        Physics2D.IgnoreLayerCollision(7, 8, true);
+        canDash = false;
+        isDashing = true;
+        trailRenderer.emitting = true;
+
+        float dashDirection = isFacingRight ? 1f : -1f;
+
+        rb.linearVelocity = new Vector2(dashDirection * dashSpeed, rb.linearVelocity.y); //Dash movemnt
+
+        yield return new WaitForSeconds(dashDirection);
+
+        rb.linearVelocity = new Vector2(0f, rb.linearVelocity.y); //Reset horizontal velocity
+
+        isDashing = false;
+        trailRenderer.emitting = false;
+        Physics2D.IgnoreLayerCollision(7, 8, false);
+
+        yield return new WaitForSeconds(dashCooldown);
+        canDash = true;
     }
 
     public void Jump(InputAction.CallbackContext context) 

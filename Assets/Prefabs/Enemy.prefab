@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 6664746804738570710}
   - component: {fileID: 7630416577882148800}
   - component: {fileID: 2295541799344340798}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Enemy
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -180,3 +180,6 @@ MonoBehaviour:
   groundLayer:
     serializedVersion: 2
     m_Bits: 8
+  damage: 1
+  maxHealth: 3
+  lootTable: []
