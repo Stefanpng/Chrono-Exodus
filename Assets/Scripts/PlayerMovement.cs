@@ -62,9 +62,6 @@ public class PlayerMovement : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        animator.SetFloat("yVelocity", rb.linearVelocity.y);
-        animator.SetFloat("magnitude", rb.linearVelocity.magnitude);
-        animator.SetBool("isWallSliding", isWallSliding);
 
         if (isDashing)
         {
@@ -80,7 +77,13 @@ public class PlayerMovement : MonoBehaviour
         {
             rb.linearVelocity = new Vector2(horizontalMovement * moveSpeed, rb.linearVelocity.y);
         }
+
+        animator.SetFloat("yVelocity", rb.linearVelocity.y);
+        animator.SetFloat("magnitude", rb.linearVelocity.magnitude);
+        animator.SetBool("isWallSliding", isWallSliding);
     }
+
+
 
     private void Gravity()
     {
