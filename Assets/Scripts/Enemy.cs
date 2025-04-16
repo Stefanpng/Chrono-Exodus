@@ -7,7 +7,7 @@ public class Enemy : MonoBehaviour
 {
     private Transform player;
     public float chaseSpeed = 2f;
-    public float jumpForce = 2f;
+    public float jumpForce = 3f;
     public LayerMask groundLayer;
 
     private Rigidbody2D rb;
@@ -45,7 +45,7 @@ public class Enemy : MonoBehaviour
        float direction = Mathf.Sign(player.position.x - transform.position.x);
        
        //Player above detectoin
-       bool isPlayerAbove =  Physics2D.Raycast(transform.position, Vector2.up, 3f, 1 << player.gameObject.layer);
+       bool isPlayerAbove =  Physics2D.Raycast(transform.position, Vector2.up, 5f, 1 << player.gameObject.layer);
        
        if (isGrounded)
         {
@@ -56,9 +56,9 @@ public class Enemy : MonoBehaviour
             //else if there's a player above and platform above
 
             //If ground
-            RaycastHit2D groundInFront = Physics2D.Raycast(transform.position, new Vector2(direction, 0), 2f, groundLayer);
+            RaycastHit2D groundInFront = Physics2D.Raycast(transform.position, new Vector2(direction, 0), 3f, groundLayer);
             //If gap
-            RaycastHit2D gapAhead = Physics2D.Raycast(transform.position + new Vector3(direction, 0, 0), Vector2.down, 2f, groundLayer);
+            RaycastHit2D gapAhead = Physics2D.Raycast(transform.position + new Vector3(direction, 0, 0), Vector2.down, 3f, groundLayer);
             //If platform
             RaycastHit2D platformAbove = Physics2D.Raycast(transform.position, Vector2.up, 3f, groundLayer);
 
