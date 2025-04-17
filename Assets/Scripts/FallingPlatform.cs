@@ -3,31 +3,34 @@ using UnityEngine;
 
 public class FallingPlatform : MonoBehaviour
 {
-    public float fallWait = 2f;
-    public float destroyWait = 1f;
+    [Header("Timing Settings")]
+    [SerializeField] private float delayBeforeFall = 2f;
+    [SerializeField] private float delayBeforeDestroy = 1f;
 
-    bool isFalling;
-    Rigidbody2D rb;
+    private bool hasStartedFalling = false;
+    private Rigidbody2D platformRb;
 
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
+    private void Awake()
     {
-        rb = GetComponent<Rigidbody2D>();
+        platformRb = GetComponent<Rigidbody2D>();
     }
 
     private void OnCollisionEnter2D(Collision2D collision)
     {
-        if(!isFalling && collision.gameObject.CompareTag("Player"))
+        if (!hasStartedFalling && collision.gameObject.CompareTag("Player"))
         {
-            StartCoroutine(Fall());
+            StartCoroutine(BeginFallSequence());
         }
     }
 
-    private IEnumerator Fall()
+    private IEnumerator BeginFallSequence()
     {
-        isFalling = true;
-        yield return new WaitForSeconds(fallWait);
-        rb.bodyType = RigidbodyType2D.Dynamic;
-        Destroy(gameObject, destroyWait);
+        hasStartedFalling = true;
+        yield return new WaitForSeconds(delayBeforeFall);
+
+        platformRb.bodyType = RigidbodyType2D.Dynamic;
+
+        yield return new WaitForSeconds(delayBeforeDestroy);
+        Destroy(gameObject);
     }
 }
