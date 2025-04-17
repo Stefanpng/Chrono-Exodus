@@ -114,6 +114,7 @@ public class PlayerMovement : MonoBehaviour
         trailRenderer.emitting = true;
 
         float dashDirection = isFacingRight ? 1f : -1f;
+        
 
         rb.linearVelocity = new Vector2(dashDirection * dashSpeed, rb.linearVelocity.y); //Dash movemnt
 
