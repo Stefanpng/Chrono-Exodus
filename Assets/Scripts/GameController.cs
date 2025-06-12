@@ -13,7 +13,7 @@ public class GameController : MonoBehaviour
 
     public GameObject player;
     public GameObject loadCanvas;
-    public GameObject[] levels;   // Changed to array for simplicity
+    public GameObject[] levels;
     private int currentLevelIndex = 0;
 
     public GameObject gameOverScreen;
@@ -31,7 +31,6 @@ public class GameController : MonoBehaviour
         loadCanvas.SetActive(false);
         gameOverScreen.SetActive(false);
 
-        // Initialize by enabling the first level and disabling others
         for (int i = 0; i < levels.Length; i++)
         {
             levels[i].SetActive(i == currentLevelIndex);
@@ -59,11 +58,9 @@ public class GameController : MonoBehaviour
     {
         loadCanvas.SetActive(false);
 
-        // Disable current level, enable the new one
         levels[currentLevelIndex].SetActive(false);
         levels[level].SetActive(true);
 
-        // Reset player position (modify as needed)
         player.transform.position = Vector3.zero;
 
         currentLevelIndex = level;
@@ -73,7 +70,6 @@ public class GameController : MonoBehaviour
         if (increaseSurvivedCount)
             survivedLevelsCount++;
 
-        // Notify subscribers that the level changed
         OnLevelChanged?.Invoke();
     }
 
