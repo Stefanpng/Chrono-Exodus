@@ -1,43 +1,86 @@
 using System;
-using System.Collections.Generic;
-using NUnit.Framework;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
 public class GameController : MonoBehaviour
 {
+    public static event Action OnReset;
+    public static event Action OnLevelChanged;
+
     int progressAmount;
     public Slider progressSlider;
 
     public GameObject player;
     public GameObject loadCanvas;
-    public List<GameObject> levels;
+    public GameObject[] levels;   // Changed to array for simplicity
     private int currentLevelIndex = 0;
 
     public GameObject gameOverScreen;
     public TMP_Text survivedText;
     public int survivedLevelsCount;
 
-    public static event Action OnReset;
-
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
+    private void Start()
     {
         progressAmount = 0;
-        progressSlider. value = 0;
+        progressSlider.value = 0;
         Coin.OnCoinCollect += IncreaseProgressAmount;
         HoldToLoad.OnHoldComplet += LoadNextLevel;
         PlayerHealth.OnPlayedDied += GameOverScreen;
+
         loadCanvas.SetActive(false);
         gameOverScreen.SetActive(false);
+
+        // Initialize by enabling the first level and disabling others
+        for (int i = 0; i < levels.Length; i++)
+        {
+            levels[i].SetActive(i == currentLevelIndex);
+        }
     }
 
-    void GameOverScreen()
+    private void IncreaseProgressAmount(int amount)
+    {
+        progressAmount += amount;
+        progressSlider.value = progressAmount;
+        if (progressAmount >= 100)
+        {
+            loadCanvas.SetActive(true);
+            Debug.Log("Level Complete");
+        }
+    }
+
+    private void LoadNextLevel()
+    {
+        int nextLevelIndex = (currentLevelIndex + 1) % levels.Length;
+        LoadLevel(nextLevelIndex, true);
+    }
+
+    private void LoadLevel(int level, bool increaseSurvivedCount)
+    {
+        loadCanvas.SetActive(false);
+
+        // Disable current level, enable the new one
+        levels[currentLevelIndex].SetActive(false);
+        levels[level].SetActive(true);
+
+        // Reset player position (modify as needed)
+        player.transform.position = Vector3.zero;
+
+        currentLevelIndex = level;
+        progressAmount = 0;
+        progressSlider.value = 0;
+
+        if (increaseSurvivedCount)
+            survivedLevelsCount++;
+
+        // Notify subscribers that the level changed
+        OnLevelChanged?.Invoke();
+    }
+
+    private void GameOverScreen()
     {
         gameOverScreen.SetActive(true);
-        survivedText.text = "You Survived " + survivedLevelsCount + " Level";
-        if (survivedLevelsCount != 1) survivedText.text += "s";
+        survivedText.text = "You Survived " + survivedLevelsCount + " Level" + (survivedLevelsCount != 1 ? "s" : "");
         Time.timeScale = 0;
     }
 
@@ -46,44 +89,7 @@ public class GameController : MonoBehaviour
         gameOverScreen.SetActive(false);
         survivedLevelsCount = 0;
         LoadLevel(0, false);
-        OnReset.Invoke();
+        OnReset?.Invoke();
         Time.timeScale = 1;
-    }
-
-    void IncreaseProgressAmount(int amount)
-    {
-        progressAmount += amount;
-        progressSlider.value = progressAmount;
-        if(progressAmount >= 100)
-        {
-            loadCanvas.SetActive(true);
-            Debug.Log("Level Complete");
-        }
-    }
-
-    void LoadLevel(int level, bool wantSurvivedIncrease)
-    {
-        loadCanvas.SetActive(false);
-
-        levels[currentLevelIndex].gameObject.SetActive(false);
-        levels[level].gameObject.SetActive(true);
-
-        player.transform.position = new Vector3(0, 0, 0);
-
-        currentLevelIndex = level;
-        progressAmount = 0;
-        progressSlider.value = 0;
-        if(wantSurvivedIncrease) survivedLevelsCount++;
-    }
-    void LoadNextLevel()
-    {
-        int nextLevelIndex = (currentLevelIndex == levels.Count - 1) ? 0 : currentLevelIndex + 1;
-        LoadLevel(nextLevelIndex, true);
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
     }
 }

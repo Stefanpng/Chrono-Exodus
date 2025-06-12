@@ -1,151 +1,128 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using NUnit.Framework;
 using UnityEngine;
 using UnityEngine.Tilemaps;
 
 public class ObjectSpawner : MonoBehaviour
 {
-    public enum ObjectType { Coin, BigCoin, Enemy }
+    public enum ObjectType { Coin, Enemy }
 
     public Tilemap tilemap;
-    public GameObject[] objectPrefabs;
-    public float bigCoinProbibility = 0.2f;
-    public float enemyProbibility = 0.1f;
-    public int maxObjects = 5;
-    public float coinLifeTime = 10f;
-    public float spawnInterval = 0.5f;
+    public GameObject[] objectPrefabs; // Expect index 0 = Coin prefab, index 1 = Enemy prefab
+
+    public int maxCoins = 10;
+    public int maxEnemies = 5;
+    public float spawnInterval = 0.1f;
 
     private List<Vector3> validSpawnPositions = new List<Vector3>();
     private List<GameObject> spawnedObjects = new List<GameObject>();
-    private bool isSpawning = false;
 
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
+    private void Start()
     {
-        GatherValidPositions();
-        StartCoroutine(SpawnObjectsIfNeeded());
-        GameController.OnReset += LevelChange;
+        GameController.OnLevelChanged += OnLevelChanged;
+        InitializeSpawner();
     }
 
-    // Update is called once per frame
-    void Update()
+    private void OnDestroy()
     {
-        if (!tilemap.gameObject.activeInHierarchy)
-        {
-            LevelChange();
-        }
-        if (!isSpawning && ActiveObjectCount() < maxObjects)
-        {
-            StartCoroutine(SpawnObjectsIfNeeded());
-        }
+        GameController.OnLevelChanged -= OnLevelChanged;
     }
 
-    private void LevelChange()
+    private void OnLevelChanged()
+    {
+        InitializeSpawner();
+    }
+
+    private void InitializeSpawner()
     {
         tilemap = GameObject.Find("Ground").GetComponent<Tilemap>();
         GatherValidPositions();
         DestroyAllSpawnedObjects();
+        StartCoroutine(SpawnObjects());
     }
 
-    private int ActiveObjectCount()
+    private IEnumerator SpawnObjects()
     {
-        spawnedObjects.RemoveAll(item => item == null);
-        return spawnedObjects.Count;
-    }
+        int coinsSpawned = 0;
+        int enemiesSpawned = 0;
 
-    private IEnumerator SpawnObjectsIfNeeded()
-    {
-        isSpawning = true;
-        while (ActiveObjectCount() < maxObjects)
+        while (coinsSpawned < maxCoins || enemiesSpawned < maxEnemies)
         {
-            SpawnObject();
-            yield return new WaitForSeconds(spawnInterval);
-        }
-        isSpawning = false;
-    }
+            if (validSpawnPositions.Count == 0)
+                yield break;
 
-    private bool PositionHasObject(Vector3 positionToCheck)
-    {
-        return spawnedObjects.Any(checkObj => checkObj && Vector3.Distance(checkObj.transform.position, positionToCheck) < 1.0f);
-    }
+            Vector3 spawnPos = GetValidSpawnPosition();
 
-    private ObjectType RandomObjectType()
-    {
-        float randomChoice = Random.value;
+            if (spawnPos == Vector3.zero)
+                yield break;
 
-        if(randomChoice <= enemyProbibility)
-        {
-            return ObjectType.Enemy;
-        }
-        else if(randomChoice <= (enemyProbibility + bigCoinProbibility))
-        {
-            return ObjectType.BigCoin;
-        }
-        else
-        {
-            return ObjectType.Coin;
-        }
-    }
-
-    private void SpawnObject()
-    {
-        if (validSpawnPositions.Count == 0) return;
-
-        Vector3 spawnPosition = Vector3.zero;
-        bool validPositionFound = false;
-
-        while(!validPositionFound && validSpawnPositions.Count > 0)
-        {
-            int randomIndex =  Random.Range(0, validSpawnPositions.Count);
-            Vector3 potentialPosition = validSpawnPositions[randomIndex];
-            Vector3 leftPosition = potentialPosition + Vector3.left;
-            Vector3 rightPosition = potentialPosition - Vector3.right;
-
-            if(!PositionHasObject(leftPosition) && !PositionHasObject(rightPosition))
+            if (coinsSpawned < maxCoins)
             {
-                spawnPosition = potentialPosition;
-                validPositionFound = true;
+                SpawnObject(ObjectType.Coin, spawnPos);
+                coinsSpawned++;
+                yield return new WaitForSeconds(spawnInterval);
             }
 
-            validSpawnPositions.RemoveAt(randomIndex);
-        }
-
-        if (validPositionFound)
-        {
-            ObjectType objectType = RandomObjectType();
-            GameObject gameObject = Instantiate(objectPrefabs[(int)objectType], spawnPosition, Quaternion.identity);
-            spawnedObjects.Add(gameObject);
-
-            //Destroy coins only after timee
-            if(objectType != ObjectType.Enemy)
+            if (enemiesSpawned < maxEnemies)
             {
-                StartCoroutine(DestroyObjectAfterTime(gameObject, coinLifeTime));
+                spawnPos = GetValidSpawnPosition();
+                if (spawnPos == Vector3.zero)
+                    yield break;
+
+                SpawnObject(ObjectType.Enemy, spawnPos);
+                enemiesSpawned++;
+                yield return new WaitForSeconds(spawnInterval);
             }
         }
     }
 
-    private IEnumerator DestroyObjectAfterTime(GameObject gameObject, float time)
+    private Vector3 GetValidSpawnPosition()
     {
-        yield return new WaitForSeconds(time);
-
-        if (gameObject)
+        for (int attempts = 0; attempts < 20; attempts++)
         {
-            spawnedObjects.Remove(gameObject);
-            validSpawnPositions.Add(gameObject.transform.position);
-            Destroy(gameObject);
+            if (validSpawnPositions.Count == 0)
+                break;
+
+            int index = Random.Range(0, validSpawnPositions.Count);
+            Vector3 pos = validSpawnPositions[index];
+
+            // Check if position is free (no objects too close)
+            if (!PositionHasObjectNearby(pos, 1f))
+            {
+                validSpawnPositions.RemoveAt(index);
+                return pos;
+            }
+            else
+            {
+                // Remove invalid pos to avoid repeated checks
+                validSpawnPositions.RemoveAt(index);
+            }
         }
+        return Vector3.zero; // No valid position found
+    }
+
+    private bool PositionHasObjectNearby(Vector3 pos, float minDistance)
+    {
+        return spawnedObjects.Any(obj => obj != null && Vector3.Distance(obj.transform.position, pos) < minDistance);
+    }
+
+    private void SpawnObject(ObjectType type, Vector3 position)
+    {
+        GameObject prefab = objectPrefabs[(int)type];
+        if (prefab == null)
+            return;
+
+        GameObject spawned = Instantiate(prefab, position, Quaternion.identity);
+        spawnedObjects.Add(spawned);
     }
 
     private void DestroyAllSpawnedObjects()
     {
-        foreach(GameObject obj in spawnedObjects)
+        foreach (GameObject obj in spawnedObjects)
         {
-            if(obj != null)
-            {
+            if (obj != null)
                 Destroy(obj);
-            }
         }
         spawnedObjects.Clear();
     }
@@ -153,19 +130,19 @@ public class ObjectSpawner : MonoBehaviour
     private void GatherValidPositions()
     {
         validSpawnPositions.Clear();
-        BoundsInt boundsInt = tilemap.cellBounds;
-        TileBase[] allTiles = tilemap.GetTilesBlock(boundsInt);
-        Vector3 start = tilemap.CellToWorld(new Vector3Int(boundsInt.xMin, boundsInt.yMin, 0));
+        BoundsInt bounds = tilemap.cellBounds;
+        TileBase[] allTiles = tilemap.GetTilesBlock(bounds);
+        Vector3 worldStart = tilemap.CellToWorld(new Vector3Int(bounds.xMin, bounds.yMin, 0));
 
-        for (int x = 0; x < boundsInt.size.x; x++)
+        for (int x = 0; x < bounds.size.x; x++)
         {
-            for (int y = 0; y < boundsInt.size.y; y++)
+            for (int y = 0; y < bounds.size.y; y++)
             {
-                TileBase tile = allTiles[x + y * boundsInt.size.x];
-                if(tile != null)
+                TileBase tile = allTiles[x + y * bounds.size.x];
+                if (tile != null)
                 {
-                    Vector3 place = start + new Vector3(x + 0.5f, y + 1.5f, 0);
-                    validSpawnPositions.Add(place);
+                    Vector3 pos = worldStart + new Vector3(x + 0.5f, y + 1.5f, 0);
+                    validSpawnPositions.Add(pos);
                 }
             }
         }
