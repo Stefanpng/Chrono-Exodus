@@ -46,6 +46,7 @@ public class ObjectSpawner : MonoBehaviour
     {
         int coinsSpawned = 0;
         int enemiesSpawned = 0;
+        
 
         while (coinsSpawned < maxCoins || enemiesSpawned < maxEnemies)
         {
